@@ -1,0 +1,49 @@
+# Configuration for Cog ⚙️
+# Reference: https://github.com/replicate/cog/blob/main/docs/yaml.md
+
+build:
+  # set to true if your model requires a GPU
+  
+  gpu: true
+  cuda: "10.0"
+  python_version: "3.7"  
+
+  # a list of ubuntu apt packages to install
+  system_packages:
+    - "wget"
+    - "zip"
+    - "unzip"
+    - "ffmpeg"
+    # - "libgl1-mesa-glx"
+    # - "libglib2.0-0"
+
+  # a list of packages in the format <package-name>==<version>
+  python_packages:
+    # - "ninja"
+    - "ftfy==6.1.1"
+    - "timm==0.6.7"
+    - "dill==0.3.5.1"
+    - "lpips==0.1.4"
+    - "torch==1.10.0"
+    - "tensorflow==1.15"
+    
+  
+  # commands run after the environment is setup
+  run:
+    - "pip install git+https://github.com/pollinations/lucid-sonic-dreams"
+    - "mkdir /content"
+    - "chmod -R a+rwx /content"
+    - "cd /content && git clone https://github.com/NVlabs/stylegan2-ada.git stylegan2"
+    - "cd /content && cp -rv stylegan2/dnnlib ./dnnlib_sg2"
+    - "cd /content && git clone https://github.com/autonomousvision/stylegan_xl"
+    - "cd /content && git clone https://github.com/stylegan-human/StyleGAN-Human.git"
+    - "cd /content && wget https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-linux.zip -o /content/ninja-linux.zip"
+    - "cd /content && unzip -o ninja-linux.zip.1 -d /usr/local/bin/"
+    - "cd /content && update-alternatives --install /usr/bin/ninja ninja /usr/local/bin/ninja 1 --force "
+    - "cd /content && mkdir -p /content/StyleGAN-Human/pretrained_models"
+    - "cd /content && wget -c -N https://s3.eu-central-1.amazonaws.com/avg-projects/stylegan_xl/models/imagenet1024.pkl -O \"/content/imagenet (XL).pkl\""
+    - "cd /content && wget -c -N https://s3.eu-central-1.amazonaws.com/avg-projects/stylegan_xl/models/ffhq1024.pkl -O \"/content/ffhq (XL).pkl\""
+    - "cd /content && wget -c -N https://s3.eu-central-1.amazonaws.com/avg-projects/stylegan_xl/models/pokemon1024.pkl -O \"/content/pokemon (XL).pkl\""
+    - "pip install regex"
+# predict.py defines how predictions are run on your model
+predict: "predict.py:Predictor"
